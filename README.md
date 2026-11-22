@@ -58,10 +58,13 @@
         <li><a href="#1-local-worktree-audit">Local Worktree Audit</a></li>
         <li><a href="#2-pull-request-audit">Pull Request Audit</a></li>
         <li><a href="#3-autonomous-remediation-loop">Autonomous Remediation Loop</a></li>
+        <li><a href="#4-pre-commit-hook-generator">Pre-Commit Hook Generator</a></li>
+        <li><a href="#5-interactive-web-dashboard">Interactive Web Dashboard</a></li>
       </ul>
     </li>
     <li><a href="#supported-ecosystems">Supported Ecosystems</a></li>
     <li><a href="#severity-tiers">Severity Tiers</a></li>
+    <li><a href="#companion-security-tooling">Companion Security Tooling</a></li>
     <li><a href="#roadmap">Roadmap</a></li>
     <li><a href="#contributing">Contributing</a></li>
     <li><a href="#license">License</a></li>
@@ -78,9 +81,10 @@
 
 - **Two-Model Adversarial Audit**: A primary auditor proposes findings with reproducible triggers; a challenger auditor skeptically tests each claim against the code to refute false positives.
 - **Dual-Axis Verification**: Independently audits **Specification Fidelity** (ensuring requirements are met without scope creep) and **Engineering Standards** (design principles and Fowler code smell baselines).
-- **Progressive Domain Guides**: Selectively loads deep guidance for 20+ modern languages and frameworks without overloading the model context window.
+- **Progressive Domain Guides**: Selectively loads deep guidance for 20+ modern languages and frameworks (including React 19, Rust, Go, Python/FastAPI, Java 17/21, Elixir, Scala, Haskell) without overloading model context windows.
 - **Multi-Forge Integration**: Seamlessly dispatches review comments to GitHub, GitLab, and Azure DevOps, or executes entirely offline on local branches.
 - **Autonomous Remediation Loop**: Harvests unresolved reviewer threads, implements verified fixes, validates against test suites, and updates discussions automatically.
+- **Web Transcript Dashboard & Git Hooks**: Bundles an interactive visual review dashboard and pre-commit hook generator.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -99,7 +103,7 @@
 flowchart TD
   Diff["Source Code Diff / Snapshot"] --> Triage["1. Complexity and Stack Triage"]
   Triage --> Specs["2. Dual-Axis Evaluation (Spec vs Standards)"]
-  Specs --> Guides["3. Progressive Knowledge Loading"]
+  Specs --> Guides["3. Progressive Knowledge Loading (20+ Ecosystems)"]
   Guides --> Engine["4. Adversarial Audit (Lead vs Challenger vs Arbiter)"]
   Engine --> Delivery["5. Multi-Forge Comment Dispatch"]
   Delivery --> Loop["6. Autonomous Remediation and Merge Gate"]
@@ -175,6 +179,28 @@ Harvest review threads across all bots and models, apply verified fixes, and res
 bash scripts/threads.sh 123 > /tmp/round-1.json
 ```
 
+### 4. Pre-Commit Hook Generator
+Enforce automated verification on staged changes before commits are minted:
+
+```bash
+# Install fast pre-commit check (complexity triage & hygiene gate)
+node scripts/install-hooks.mjs --install --mode fast
+
+# Or install full local adversarial audit
+node scripts/install-hooks.mjs --install --mode full
+
+# Check active hook status
+node scripts/install-hooks.mjs --check
+```
+
+### 5. Interactive Web Dashboard
+Launch a local visual dashboard to inspect multi-model debate transcripts and audit trails:
+
+```bash
+node scripts/serve-viewer.mjs
+```
+*Serves on `http://localhost:3333` and opens your default browser.*
+
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 <!-- SUPPORTED ECOSYSTEMS -->
@@ -194,6 +220,9 @@ Deep Review bundles progressive audit guides across modern stacks:
 | | Go (goroutines, channels, context leaks) | `reference/go.md` |
 | | Python, FastAPI (Pydantic v2), Django/DRF | `reference/python.md`, `fastapi.md`, `django.md` |
 | | Java 17/21 (Virtual Threads), Java 8 | `reference/java.md`, `java8.md` |
+| | Elixir & Phoenix (OTP, GenServer, Ecto N+1) | `reference/elixir.md` |
+| | Scala 3 & 2.13 (ExecutionContext, Cats, ZIO) | `reference/scala.md` |
+| | Haskell (Laziness, space leaks, totality) | `reference/haskell.md` |
 | | C# 12 / .NET 8 (EF Core, async patterns) | `reference/csharp.md` |
 | | PHP 8.x, Composer, PDO | `reference/php.md` |
 | | Ruby 3.4+, Rails 8 (Active Record, Jobs) | `reference/ruby.md` |
@@ -220,6 +249,21 @@ Findings are mapped to standard alert blockquotes:
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
+<!-- COMPANION SECURITY TOOLING -->
+## Companion Security Tooling
+
+For full-repository penetration testing, threat modeling, and coverage-led ledger audits, Deep Review pairs directly with Cloudflare's security audit skill:
+
+```bash
+# Install companion security audit skill:
+npx skills add https://github.com/cloudflare/security-audit-skill --skill security-audit
+
+# Or install automatically via the pre-commit hook setup:
+node scripts/install-hooks.mjs --install --with-security-audit
+```
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
 <!-- ROADMAP -->
 ## Roadmap
 
@@ -232,8 +276,7 @@ Findings are mapped to standard alert blockquotes:
 - [x] Language ecosystem expansion (Elixir, Scala, Haskell)
 - [x] Pre-commit hook generator (`scripts/install-hooks.mjs`)
 - [x] Interactive web transcript viewer (`scripts/serve-viewer.mjs`)
-
-See the [open issues](https://github.com/Salafite/deep-review/issues) for proposed enhancements.
+- [x] Cloudflare security audit companion integration
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
