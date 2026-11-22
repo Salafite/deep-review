@@ -1,33 +1,36 @@
 {
-  "name": "debate-code-review",
-  "version": "1.0.0",
-  "description": "Two-model adversarial debate code review and autonomous PR babysitter with 20+ specialized language ecosystems",
-  "type": "module",
-  "main": "scripts/review-pr.mjs",
-  "bin": {
-    "debate-code-review": "scripts/review-pr.mjs"
-  },
-  "keywords": [
-    "code-review",
-    "skills",
-    "ai-agents",
-    "claude-code",
-    "antigravity",
-    "codex",
-    "pull-request",
-    "developer-tools"
-  ],
-  "author": "Salafite",
-  "license": "MIT",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/Salafite/Debate-Code-Review.git"
-  },
-  "bugs": {
-    "url": "https://github.com/Salafite/Debate-Code-Review/issues"
-  },
-  "homepage": "https://github.com/Salafite/Debate-Code-Review#readme",
-  "engines": {
-    "node": ">=18.0.0"
-  }
+    "name":  "@salafite/debate-code-review",
+    "version":  "1.0.0",
+    "description":  "Two-model adversarial debate code review and autonomous PR babysitter with 20+ specialized language ecosystems",
+    "type":  "module",
+    "main":  "scripts/review-pr.mjs",
+    "bin":  {
+                "debate-code-review":  "scripts/review-pr.mjs"
+            },
+    "keywords":  [
+                     "code-review",
+                     "skills",
+                     "ai-agents",
+                     "claude-code",
+                     "antigravity",
+                     "codex",
+                     "pull-request",
+                     "developer-tools"
+                 ],
+    "author":  "Salafite",
+    "license":  "MIT",
+    "repository":  {
+                       "type":  "git",
+                       "url":  "https://github.com/Salafite/Debate-Code-Review.git"
+                   },
+    "bugs":  {
+                 "url":  "https://github.com/Salafite/Debate-Code-Review/issues"
+             },
+    "homepage":  "https://github.com/Salafite/Debate-Code-Review#readme",
+    "engines":  {
+                    "node":  "\u003e=18.0.0"
+                },
+    "publishConfig":  {
+                          "registry":  "https://npm.pkg.github.com"
+                      }
 }
