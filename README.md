@@ -229,9 +229,9 @@ Findings are mapped to standard alert blockquotes:
 - [x] Specification fidelity vs engineering standards evaluation
 - [x] Autonomous remediation loop (`threads.sh`)
 - [x] GitHub Package distribution (`@salafite/deep-review`)
-- [ ] Language ecosystem expansion (Elixir, Scala, Haskell)
-- [ ] Pre-commit hook generator
-- [ ] Interactive web transcript viewer
+- [x] Language ecosystem expansion (Elixir, Scala, Haskell)
+- [x] Pre-commit hook generator (`scripts/install-hooks.mjs`)
+- [x] Interactive web transcript viewer (`scripts/serve-viewer.mjs`)
 
 See the [open issues](https://github.com/Salafite/deep-review/issues) for proposed enhancements.
 

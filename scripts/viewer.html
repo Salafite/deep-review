@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Deep Review · Interactive Audit Dashboard</title>
+  <style>
+    :root {
+      --bg: #0f172a;
+      --card-bg: #1e293b;
+      --border: #334155;
+      --text: #f8fafc;
+      --text-muted: #94a3b8;
+      --accent: #38bdf8;
+      --p0-bg: #450a0a;
+      --p0-border: #ef4444;
+      --p0-text: #fca5a5;
+      --p1-bg: #451a03;
+      --p1-border: #f97316;
+      --p1-text: #fdba74;
+      --p2-bg: #082f49;
+      --p2-border: #0ea5e9;
+      --p2-text: #7dd3fc;
+      --success: #22c55e;
+      --danger: #ef4444;
+      --warn: #eab308;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      line-height: 1.5;
+      padding: 24px;
+    }
+    .container { max-width: 1400px; margin: 0 auto; }
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-bottom: 20px;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 24px;
+    }
+    h1 { font-size: 1.5rem; display: flex; align-items: center; gap: 10px; color: var(--accent); }
+    .meta-badges { display: flex; gap: 12px; font-size: 0.85rem; }
+    .badge {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      padding: 4px 10px;
+      border-radius: 6px;
+      color: var(--text-muted);
+    }
+    .badge span { color: var(--text); font-weight: 600; }
+    
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+    .stat-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      padding: 16px;
+      border-radius: 8px;
+      text-align: center;
+    }
+    .stat-val { font-size: 1.8rem; font-weight: 700; }
+    .stat-label { font-size: 0.8rem; color: var(--text-muted); text-transform: uppercase; margin-top: 4px; }
+    
+    .controls {
+      display: flex;
+      gap: 16px;
+      align-items: center;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+    }
+    input[type="text"] {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      color: var(--text);
+      padding: 8px 14px;
+      border-radius: 6px;
+      flex: 1;
+      min-width: 260px;
+    }
+    select, button {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      color: var(--text);
+      padding: 8px 14px;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+    button:hover { background: #334155; }
+    
+    .finding-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      margin-bottom: 16px;
+      overflow: hidden;
+    }
+    .finding-header {
+      padding: 12px 18px;
+      background: rgba(255, 255, 255, 0.03);
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .pill {
+      font-size: 0.75rem;
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-weight: 600;
+      text-transform: uppercase;
+    }
+    .p0 { background: var(--p0-bg); border: 1px solid var(--p0-border); color: var(--p0-text); }
+    .p1 { background: var(--p1-bg); border: 1px solid var(--p1-border); color: var(--p1-text); }
+    .p2 { background: var(--p2-bg); border: 1px solid var(--p2-border); color: var(--p2-text); }
+    
+    .finding-body {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+      padding: 18px;
+    }
+    @media (max-width: 900px) {
+      .finding-body { grid-template-columns: 1fr; }
+    }
+    .pane {
+      background: #111827;
+      border: 1px solid #1f2937;
+      padding: 14px;
+      border-radius: 6px;
+    }
+    .pane-title {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      font-weight: 600;
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .code-block {
+      background: #030712;
+      border: 1px solid #1f2937;
+      padding: 8px 12px;
+      border-radius: 4px;
+      font-family: monospace;
+      font-size: 0.85rem;
+      margin-top: 8px;
+      color: #38bdf8;
+      overflow-x: auto;
+    }
+    .verdict-tag {
+      font-size: 0.75rem;
+      padding: 2px 6px;
+      border-radius: 4px;
+      margin-left: auto;
+    }
+    .tag-confirm { background: #14532d; color: #86efac; }
+    .tag-refute { background: #7f1d1d; color: #fca5a5; }
+    .tag-downgrade { background: #713f12; color: #fde047; }
+    
+    .final-verdict {
+      grid-column: 1 / -1;
+      padding: 12px 18px;
+      background: rgba(0, 0, 0, 0.2);
+      border-top: 1px solid var(--border);
+      font-size: 0.9rem;
+    }
+    #dropzone {
+      border: 2px dashed var(--border);
+      padding: 30px;
+      text-align: center;
+      border-radius: 8px;
+      margin-bottom: 24px;
+      cursor: pointer;
+      color: var(--text-muted);
+    }
+    #dropzone:hover { border-color: var(--accent); color: var(--text); }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>🔍 Deep Review Dashboard</h1>
+      <div class="meta-badges">
+        <div class="badge">Target: <span id="meta-target">Local Tree / PR</span></div>
+        <div class="badge">Head SHA: <span id="meta-sha">latest</span></div>
+        <div class="badge">Status: <span id="meta-status">Ready</span></div>
+      </div>
+    </header>
+
+    <div id="dropzone" onclick="document.getElementById('file-input').click()">
+      📂 Drag and drop a <strong>run.json</strong> file here, or click to browse
+      <input type="file" id="file-input" style="display:none" accept=".json" onchange="loadFile(event)">
+    </div>
+
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-val" id="stat-total" style="color: var(--accent)">0</div>
+        <div class="stat-label">Total Findings</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-val" id="stat-p0" style="color: var(--p0-text)">0</div>
+        <div class="stat-label">P0 Blocking (Security)</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-val" id="stat-p1" style="color: var(--p1-text)">0</div>
+        <div class="stat-label">P1 Blocking (Defects)</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-val" id="stat-p2" style="color: var(--p2-text)">0</div>
+        <div class="stat-label">P2 Non-Blocking</div>
+      </div>
+    </div>
+
+    <div class="controls">
+      <input type="text" id="search" placeholder="Filter findings by file, keyword, or claim..." oninput="renderFindings()">
+      <select id="severity-filter" onchange="renderFindings()">
+        <option value="all">All Severities</option>
+        <option value="p0">P0 Only</option>
+        <option value="p1">P1 Only</option>
+        <option value="p2">P2 Only</option>
+      </select>
+      <select id="status-filter" onchange="renderFindings()">
+        <option value="all">All Statuses</option>
+        <option value="agreed">Agreed</option>
+        <option value="contested">Contested</option>
+      </select>
+    </div>
+
+    <div id="findings-container"></div>
+  </div>
+
+  <script>
+    let auditData = null;
+
+    function loadFile(e) {
+      const file = e.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        try {
+          auditData = JSON.parse(event.target.result);
+          initDashboard();
+        } catch (err) {
+          alert("Invalid JSON file: " + err.message);
+        }
+      };
+      reader.readAsText(file);
+    }
+
+    // Drag and drop handlers
+    const dropzone = document.getElementById('dropzone');
+    dropzone.addEventListener('dragover', (e) => { e.preventDefault(); dropzone.style.borderColor = 'var(--accent)'; });
+    dropzone.addEventListener('dragleave', () => { dropzone.style.borderColor = 'var(--border)'; });
+    dropzone.addEventListener('drop', (e) => {
+      e.preventDefault();
+      dropzone.style.borderColor = 'var(--border)';
+      if (e.dataTransfer.files.length) {
+        loadFile({ target: { files: e.dataTransfer.files } });
+      }
+    });
+
+    // Auto-fetch if served by server
+    fetch('/api/latest')
+      .then(r => r.ok ? r.json() : null)
+      .then(data => { if (data) { auditData = data; initDashboard(); } })
+      .catch(() => {});
+
+    function initDashboard() {
+      if (!auditData) return;
+      document.getElementById('meta-target').textContent = auditData.target || auditData.repo || 'Local';
+      document.getElementById('meta-sha').textContent = (auditData.head || 'latest').slice(0, 8);
+      document.getElementById('meta-status').textContent = 'Audit Loaded';
+
+      const findings = auditData.findings || [];
+      document.getElementById('stat-total').textContent = findings.length;
+      document.getElementById('stat-p0').textContent = findings.filter(f => (f.severity || '').toLowerCase() === 'p0').length;
+      document.getElementById('stat-p1').textContent = findings.filter(f => (f.severity || '').toLowerCase() === 'p1').length;
+      document.getElementById('stat-p2').textContent = findings.filter(f => (f.severity || '').toLowerCase() === 'p2').length;
+
+      renderFindings();
+    }
+
+    function renderFindings() {
+      const container = document.getElementById('findings-container');
+      container.innerHTML = '';
+      if (!auditData || !auditData.findings) return;
+
+      const q = document.getElementById('search').value.toLowerCase();
+      const sevFilter = document.getElementById('severity-filter').value;
+      const statFilter = document.getElementById('status-filter').value;
+
+      const filtered = auditData.findings.filter(f => {
+        const matchesQuery = !q || (f.claim || '').toLowerCase().includes(q) || (f.file || '').toLowerCase().includes(q);
+        const matchesSev = sevFilter === 'all' || (f.severity || '').toLowerCase() === sevFilter;
+        const matchesStat = statFilter === 'all' || (f.status || '').toLowerCase() === statFilter;
+        return matchesQuery && matchesSev && matchesStat;
+      });
+
+      if (!filtered.length) {
+        container.innerHTML = '<div style="text-align:center; padding: 40px; color: var(--text-muted);">No matching findings.</div>';
+        return;
+      }
+
+      filtered.forEach(f => {
+        const sevClass = (f.severity || 'P2').toLowerCase();
+        const card = document.createElement('div');
+        card.className = 'finding-card';
+        card.innerHTML = `
+          <div class="finding-header">
+            <div>
+              <span class="pill ${sevClass}">${f.severity || 'P2'}</span>
+              <strong style="margin-left: 10px;">${f.file || 'File'}:${f.line_start || 0}</strong>
+            </div>
+            <span class="pill" style="background:#334155">${f.status || 'Agreed'}</span>
+          </div>
+          <div class="finding-body">
+            <div class="pane">
+              <div class="pane-title">🧑‍⚖️ Primary Auditor finding</div>
+              <p><strong>Claim:</strong> ${f.claim || ''}</p>
+              ${f.trigger ? `<p style="margin-top:6px; color:var(--text-muted)"><strong>Trigger:</strong> ${f.trigger}</p>` : ''}
+              ${f.evidence ? `<div class="code-block">${f.evidence}</div>` : ''}
+            </div>
+            <div class="pane">
+              <div class="pane-title">
+                ⚔️ Challenger Evaluation
+                <span class="verdict-tag ${f.debate_verdict === 'refute' ? 'tag-refute' : (f.debate_verdict === 'downgrade' ? 'tag-downgrade' : 'tag-confirm')}">
+                  ${f.debate_verdict || 'Confirmed'}
+                </span>
+              </div>
+              <p>${f.debate_reasoning || f.challenge || 'No challenge recorded. Finding confirmed.'}</p>
+            </div>
+          </div>
+          ${f.recommendation ? `
+            <div class="final-verdict">
+              <strong>💡 Recommendation:</strong> ${f.recommendation}
+            </div>
+          ` : ''}
+        `;
+        container.appendChild(card);
+      });
+    }
+  </script>
+</body>
+</html>
