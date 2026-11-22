@@ -1,4 +1,4 @@
-﻿# Debate Code Review
+﻿# Deep Review
 
 An AI-driven code review tool featuring multi-model adversarial debate and autonomous review cycle resolution.
 
@@ -12,13 +12,13 @@ An AI-driven code review tool featuring multi-model adversarial debate and auton
 ## Installation
 
 ```bash
-npx skills add Salafite/Debate-Code-Review
+npx skills add Salafite/deep-review
 ```
 
 Or clone directly into your agent skills folder:
 
 ```bash
-git clone https://github.com/Salafite/Debate-Code-Review.git .agents/skills/debate-code-review
+git clone https://github.com/Salafite/deep-review.git .agents/skills/deep-review
 ```
 
 ## Quick Start

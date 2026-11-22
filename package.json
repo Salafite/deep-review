@@ -1,11 +1,11 @@
 {
-    "name":  "@salafite/debate-code-review",
+    "name":  "@salafite/deep-review",
     "version":  "1.0.0",
     "description":  "Two-model adversarial debate code review and autonomous PR babysitter with 20+ specialized language ecosystems",
     "type":  "module",
     "main":  "scripts/review-pr.mjs",
     "bin":  {
-                "debate-code-review":  "scripts/review-pr.mjs"
+                "deep-review":  "scripts/review-pr.mjs"
             },
     "keywords":  [
                      "code-review",
@@ -21,12 +21,12 @@
     "license":  "MIT",
     "repository":  {
                        "type":  "git",
-                       "url":  "https://github.com/Salafite/Debate-Code-Review.git"
+                       "url":  "https://github.com/Salafite/deep-review.git"
                    },
     "bugs":  {
-                 "url":  "https://github.com/Salafite/Debate-Code-Review/issues"
+                 "url":  "https://github.com/Salafite/deep-review/issues"
              },
-    "homepage":  "https://github.com/Salafite/Debate-Code-Review#readme",
+    "homepage":  "https://github.com/Salafite/deep-review#readme",
     "engines":  {
                     "node":  "\u003e=18.0.0"
                 },
