@@ -492,3 +492,27 @@ logger.info('User login attempt', { email, success: true });
 | **Medium** | Moderate risk, defense in depth concern | Should fix, can merge with tracking |
 | **Low** | Minor issue, best practice violation | Nice to fix, non-blocking |
 | **Info** | Suggestion for improvement | Optional enhancement |
+
+
+---
+
+## Multi-Phase Security Audit & Attack Classes (Cloudflare Reference)
+
+For comprehensive codebase security audits and vulnerability hunting, Deep Review adopts key principles from [Cloudflare's Security Audit Architecture](https://github.com/cloudflare/security-audit-skill):
+
+### 1. Attack Class Checklist
+- **AI & LLM Vulnerabilities**: Prompt injection, untrusted tool/function call execution, raw LLM output rendering (DOM XSS / SSRF).
+- **Tenant & Data Isolation**: Cross-tenant data leakage in multi-tenant schemas, shared caches, background jobs, export/backup features.
+- **Web Protocols & Request Framing**: HTTP request smuggling, cache-key poisoning, OAuth/OIDC state validation, SSRF via egress fetchers.
+- **Supply Chain & Release Hygiene**: Unpinned action SHAs, lockfile tampering, untrusted CI build artifacts, third-party plugin boundaries.
+- **Memory & Concurrency Boundaries**: Unsafe blocks, buffer bounds, TOCTOU race windows between validation and access.
+
+### 2. Independent Verification & Falsification
+- **The Disproval Rule**: The auditor checking a vulnerability should actively try to *disprove* it before reporting. A defect is only confirmed if the source path is traceable to an unconstrained sink.
+- **Needs Validation Status**: If a defect path appears plausible but depends on unverified upstream filters or environment config, mark as `needs_validation` rather than reporting false positives.
+
+### 3. Complementary Deep Security Tooling
+- For full-repository penetration testing, threat modeling, and coverage-led ledger audits, install the complementary skill:
+  ```bash
+  npx skills add https://github.com/cloudflare/security-audit-skill --skill security-audit
+  ```

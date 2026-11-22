@@ -4,10 +4,12 @@
  *
  * Pre-commit hook generator for Git repositories.
  * Installs or manages git pre-commit hooks to verify staged changes before committing.
+ * Optionally installs the complementary cloudflare/security-audit-skill.
  */
 
 import fs from 'node:fs';
 import path from 'node:path';
+import { execSync } from 'node:child_process';
 
 const HELP = `deep-review · install-hooks.mjs
 
@@ -22,6 +24,7 @@ Options:
   --mode <fast|full>     Execution mode:
                            fast (default) - Runs complexity triage and hygiene gate
                            full           - Runs full local two-model adversarial audit
+  --with-security-audit  Also install cloudflare/security-audit-skill for deep threat hunting
   --help, -h             Show this help message
 `;
 
@@ -30,6 +33,7 @@ function parseArgs(argv) {
     repoDir: process.cwd(),
     mode: 'fast',
     action: 'install',
+    withSecurityAudit: false,
   };
 
   for (let i = 2; i < argv.length; i++) {
@@ -43,6 +47,8 @@ function parseArgs(argv) {
       opts.action = 'uninstall';
     } else if (arg === '--check') {
       opts.action = 'check';
+    } else if (arg === '--with-security-audit') {
+      opts.withSecurityAudit = true;
     } else if (arg === '--mode') {
       opts.mode = argv[++i] || 'fast';
     } else if (arg === '--repo-dir') {
@@ -61,7 +67,6 @@ function getGitDir(root) {
     throw new Error(`Not a git repository: ${root} (missing .git directory)`);
   }
   if (fs.statSync(gitPath).isFile()) {
-    // Worktree or submodule: .git is a file containing "gitdir: <path>"
     const content = fs.readFileSync(gitPath, 'utf8').trim();
     const match = content.match(/^gitdir:\s*(.+)$/i);
     if (match) return path.resolve(root, match[1]);
@@ -106,6 +111,17 @@ exit 0
 `;
 }
 
+function installSecurityAudit() {
+  console.log(`\n🛡️ [deep-review] Installing cloudflare/security-audit-skill...`);
+  try {
+    execSync('npx skills add https://github.com/cloudflare/security-audit-skill --skill security-audit', { stdio: 'inherit' });
+    console.log(`✅ cloudflare/security-audit-skill installed successfully.`);
+  } catch (err) {
+    console.warn(`⚠️ Could not automatically run npx skills add. You can install it manually:`);
+    console.warn(`   npx skills add https://github.com/cloudflare/security-audit-skill --skill security-audit`);
+  }
+}
+
 function main() {
   const opts = parseArgs(process.argv);
   const gitDir = getGitDir(opts.repoDir);
@@ -138,12 +154,20 @@ function main() {
     process.exit(0);
   }
 
-  // Install
+  // Install hook
   fs.mkdirSync(hooksDir, { recursive: true });
   const scriptContent = generateHookScript(opts.mode, skillRoot);
   fs.writeFileSync(hookFile, scriptContent, { mode: 0o755 });
   console.log(`🎉 Successfully installed deep-review pre-commit hook (${opts.mode} mode) at:`);
   console.log(`   ${hookFile}`);
+
+  if (opts.withSecurityAudit) {
+    installSecurityAudit();
+  } else {
+    console.log(`\n💡 Tip: For comprehensive penetration testing and threat modeling, install Cloudflare's security-audit:`);
+    console.log(`   node scripts/install-hooks.mjs --with-security-audit`);
+    console.log(`   or: npx skills add https://github.com/cloudflare/security-audit-skill --skill security-audit\n`);
+  }
 }
 
 main();
