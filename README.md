@@ -66,7 +66,6 @@
     <li><a href="#contributing">Contributing</a></li>
     <li><a href="#license">License</a></li>
     <li><a href="#contact">Contact</a></li>
-    <li><a href="#acknowledgments">Acknowledgments</a></li>
   </ol>
 </details>
 
@@ -264,15 +263,6 @@ Distributed under the MIT License. See `LICENSE` for more information.
 Salafite - [@Salafite](https://github.com/Salafite)
 
 Project Repository: [https://github.com/Salafite/deep-review](https://github.com/Salafite/deep-review)
-
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
-
-<!-- ACKNOWLEDGMENTS -->
-## Acknowledgments
-
-* [Best-README-Template](https://github.com/othneildrew/Best-README-Template)
-* [PyDigger](https://pydigger.code-maven.com/)
-* [Shields.io](https://shields.io/)
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
